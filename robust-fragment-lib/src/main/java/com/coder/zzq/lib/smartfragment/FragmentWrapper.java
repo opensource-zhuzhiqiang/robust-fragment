@@ -1,7 +1,8 @@
 package com.coder.zzq.lib.smartfragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
 
 public class FragmentWrapper {
     private Class<? extends Fragment> mFragmentClass;
