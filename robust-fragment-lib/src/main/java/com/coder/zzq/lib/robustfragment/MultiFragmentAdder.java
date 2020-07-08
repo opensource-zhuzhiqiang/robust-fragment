@@ -1,4 +1,4 @@
-package com.coder.zzq.lib.smartfragment;
+package com.coder.zzq.lib.robustfragment;
 
 import android.os.Bundle;
 import android.view.View;
