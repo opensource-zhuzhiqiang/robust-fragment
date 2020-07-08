@@ -1,4 +1,4 @@
-package com.coder.zzq.smartfragment;
+package com.coder.zzq.robustfragment;
 
 import org.junit.Test;
 
