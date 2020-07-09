@@ -3,11 +3,11 @@ package com.coder.zzq.lib.robustfragment;
 import androidx.fragment.app.Fragment;
 
 public class Utils {
-    public static String parseRobustFragmentTag(Class<? extends Fragment> fragmentClass, String tag) {
+    public static String parseRobustFragmentTag(Class<? extends Fragment> fragmentClass, int containerId, String tag) {
         if (tag == null) {
             tag = "";
         }
-        return "Robust#FragTag#" + fragmentClass.getName() + "#" + tag.trim();
+        return "Robust#FragTag#" + fragmentClass.getName() + "#" + containerId + "#" + tag.trim();
     }
 
     public static String parseRobustFragmentBackEntryName(Class<? extends Fragment> fragmentClass, String name) {

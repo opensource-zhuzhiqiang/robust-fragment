@@ -16,6 +16,7 @@ public class ExampleFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("test",getArguments().toString());
     }
 
     @Nullable

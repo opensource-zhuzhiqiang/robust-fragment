@@ -12,6 +12,7 @@ public class FragmentOptions {
     private int mContainerId;
     boolean mUniqueOwnerOfContainer = true;
     private String mTag;
+    private String mTransformedTag;
     private boolean mAddToBackStack = false;
     private String mBackEntryName;
 
@@ -56,6 +57,7 @@ public class FragmentOptions {
 
     public FragmentOptions tag(String tag) {
         mTag = tag;
+        mTransformedTag = null;
         return this;
     }
 
@@ -78,7 +80,11 @@ public class FragmentOptions {
     }
 
     public String getTag() {
-        return "Robust#" + mFragmentClass.getSimpleName() + "#" + mTag;
+        if (mTransformedTag == null) {
+            mTransformedTag = Utils.parseRobustFragmentTag(mFragmentClass, mContainerId, mTag);
+        }
+
+        return mTransformedTag;
     }
 
     public boolean isAddToBackStack() {
