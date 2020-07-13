@@ -1,42 +1,50 @@
-package com.coder.zzq.lib.robustfragment;
+package com.coder.zzq.lib.robustfragment.injector;
 
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 
-public class FragmentOptions {
+import com.coder.zzq.lib.robustfragment.Utils;
+
+public final class FragmentOptions implements IFragmentOption {
     private Class<? extends Fragment> mFragmentClass;
     private Bundle mArguments;
     @IdRes
     private int mContainerId;
-    boolean mUniqueOwnerOfContainer = true;
     private String mTag;
     private String mTransformedTag;
-    private boolean mAddToBackStack = false;
-    private String mBackEntryName;
+    private boolean alreadyAddedToFragmentManager;
 
-    public static FragmentOptions create() {
+    private FragmentOptions() {
+
+    }
+
+    public static IFragmentOption create() {
         return new FragmentOptions();
     }
 
+    @Override
     public FragmentOptions fragmentClass(Class<? extends Fragment> fragmentClass) {
-        mFragmentClass = fragmentClass;
+        mFragmentClass = com.coder.zzq.toolkit.Utils.requireNonNull(fragmentClass, "the fragment class must be not null");
         return this;
     }
 
+    @Override
     public FragmentOptions intArgument(String argName, int argValue) {
         ensureArgumentsBundleCreated();
         mArguments.putInt(argName, argValue);
         return this;
     }
 
+    @Override
     public FragmentOptions stringArgument(String argName, String argValue) {
         ensureArgumentsBundleCreated();
         mArguments.putString(argName, argValue);
         return this;
     }
 
+    @Override
     public FragmentOptions arguments(Bundle arguments) {
         ensureArgumentsBundleCreated();
         mArguments.putAll(arguments);
@@ -49,21 +57,16 @@ public class FragmentOptions {
         }
     }
 
-    public FragmentOptions container(@IdRes int containerId, boolean uniqueOwnerOfContainer) {
+    @Override
+    public FragmentOptions container(@IdRes int containerId) {
         mContainerId = containerId;
-        mUniqueOwnerOfContainer = uniqueOwnerOfContainer;
         return this;
     }
 
+    @Override
     public FragmentOptions tag(String tag) {
-        mTag = tag;
+        mTag = (tag == null) ? "" : tag.trim();
         mTransformedTag = null;
-        return this;
-    }
-
-    public FragmentOptions addToBackStack(boolean addToBackStack, String backEntryName) {
-        mAddToBackStack = addToBackStack;
-        mBackEntryName = backEntryName;
         return this;
     }
 
@@ -80,6 +83,10 @@ public class FragmentOptions {
     }
 
     public String getTag() {
+        return mTag;
+    }
+
+    public String getTransformedTag() {
         if (mTransformedTag == null) {
             mTransformedTag = Utils.parseRobustFragmentTag(mFragmentClass, mContainerId, mTag);
         }
@@ -87,15 +94,12 @@ public class FragmentOptions {
         return mTransformedTag;
     }
 
-    public boolean isAddToBackStack() {
-        return mAddToBackStack;
+
+    public void setAlreadyAddedToFragmentManager(boolean alreadyAddedToFragmentManager) {
+        this.alreadyAddedToFragmentManager = alreadyAddedToFragmentManager;
     }
 
-    public String getBackEntryName() {
-        return mBackEntryName;
-    }
-
-    public boolean isUniqueOwnerOfContainer() {
-        return mUniqueOwnerOfContainer;
+    public boolean isAlreadyAddedToFragmentManager() {
+        return alreadyAddedToFragmentManager;
     }
 }

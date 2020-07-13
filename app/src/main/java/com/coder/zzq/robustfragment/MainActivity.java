@@ -2,12 +2,11 @@ package com.coder.zzq.robustfragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
-import com.coder.zzq.lib.robustfragment.FragmentOptions;
-import com.coder.zzq.lib.robustfragment.RobustFragmentMaster;
+import androidx.fragment.app.Fragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,30 +16,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        int id01 = RobustFragmentMaster.singleInjector()
-                .fragment(
-                        FragmentOptions.create()
-                                .intArgument("testArg", 1)
-                                .fragmentClass(ExampleFragment.class)
-                                .addToBackStack(true, "fragment0001")
-                                .tag("001")
-                                .container(R.id.fragment_container, false)
-                )
-                .addInto(this);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new ExampleFragment(), "12345")
+                .commit();
 
-       int id02=  RobustFragmentMaster.singleInjector()
-                .fragment(
-                        FragmentOptions.create()
-                                .intArgument("testArg", 1)
-                                .fragmentClass(ExampleFragment.class)
-                                .addToBackStack(true, "fragment0002")
-                                .tag("002")
-                                .container(R.id.fragment_container, false)
-                )
-                .addInto(this);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new ExampleFragment(), "67890")
+                .commit();
+    }
 
-       getSupportFragmentManager().popBackStack(id01,0);
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
 
     }
 
+    public void onClick(View view) {
+
+
+//        getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.fragment_container)).commitNow();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
+        Log.d("test", fragment.isAdded() + "" + fragment.isVisible() + fragment.isDetached());
+    }
 }
