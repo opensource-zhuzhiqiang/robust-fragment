@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.coder.zzq.lib.robustfragment.injector.FragmentOptions;
+import com.coder.zzq.lib.robustfragment.options.FragmentOptions;
 
-public class RobustFragmentRetriever {
+public class FragmentRetriever {
     public static Fragment createOrRetrieveFragment(FragmentManager fragmentManager, FragmentOptions fragmentOptions) {
         Fragment fragment = fragmentOptions.getTag().isEmpty()
                 ? fragmentManager.findFragmentById(fragmentOptions.getContainerId())

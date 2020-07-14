@@ -1,13 +1,13 @@
-package com.coder.zzq.lib.robustfragment.injector;
+package com.coder.zzq.lib.robustfragment.options;
 
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 
-import com.coder.zzq.lib.robustfragment.Utils;
+import com.coder.zzq.lib.robustfragment.RobustUtils;
 
-public final class FragmentOptions implements IFragmentOption {
+public final class FragmentOptions implements IFragmentOptions {
     private Class<? extends Fragment> mFragmentClass;
     private Bundle mArguments;
     @IdRes
@@ -20,7 +20,7 @@ public final class FragmentOptions implements IFragmentOption {
 
     }
 
-    public static IFragmentOption create() {
+    public static IFragmentOptions create() {
         return new FragmentOptions();
     }
 
@@ -58,7 +58,7 @@ public final class FragmentOptions implements IFragmentOption {
     }
 
     @Override
-    public FragmentOptions container(@IdRes int containerId) {
+    public FragmentOptions containerId(@IdRes int containerId) {
         mContainerId = containerId;
         return this;
     }
@@ -88,7 +88,7 @@ public final class FragmentOptions implements IFragmentOption {
 
     public String getTransformedTag() {
         if (mTransformedTag == null) {
-            mTransformedTag = Utils.parseRobustFragmentTag(mFragmentClass, mContainerId, mTag);
+            mTransformedTag = RobustUtils.parseRobustFragmentTag(mFragmentClass, mContainerId, mTag);
         }
 
         return mTransformedTag;

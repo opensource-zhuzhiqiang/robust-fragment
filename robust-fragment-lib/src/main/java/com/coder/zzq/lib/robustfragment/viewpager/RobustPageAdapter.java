@@ -5,15 +5,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RobustFragmentStatePageAdapter extends FragmentStatePagerAdapter {
+public abstract class RobustPageAdapter extends FragmentPagerAdapter implements IRobustPageAdapter {
     private List<Fragment> mFragmentList;
 
-    public RobustFragmentStatePageAdapter(@NonNull FragmentManager fm, int behavior) {
+    public RobustPageAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }
 
@@ -34,6 +34,11 @@ public abstract class RobustFragmentStatePageAdapter extends FragmentStatePagerA
         mFragmentList.set(position, null);
     }
 
+    @Override
+    public Fragment getFragmentItem(int position) {
+        return mFragmentList == null ? null : mFragmentList.get(position);
+    }
+
     public void ensureFragmentListCreated(int position) {
         if (mFragmentList == null) {
             mFragmentList = new ArrayList<>(getCount());
@@ -43,4 +48,6 @@ public abstract class RobustFragmentStatePageAdapter extends FragmentStatePagerA
             mFragmentList.add(null);
         }
     }
+
+
 }

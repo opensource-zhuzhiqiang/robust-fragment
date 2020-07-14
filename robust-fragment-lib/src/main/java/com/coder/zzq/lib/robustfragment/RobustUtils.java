@@ -2,7 +2,7 @@ package com.coder.zzq.lib.robustfragment;
 
 import androidx.fragment.app.Fragment;
 
-public class Utils {
+public class RobustUtils {
     public static String parseRobustFragmentTag(Class<? extends Fragment> fragmentClass, int containerId, String tag) {
         return "Robust#FragTag#" + fragmentClass.getName() + "#" + containerId + "#" + tag;
     }

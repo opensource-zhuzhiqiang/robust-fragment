@@ -1,12 +1,18 @@
 package com.coder.zzq.robustfragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.coder.zzq.lib.robustfragment.FragmentMaster;
+import com.coder.zzq.lib.robustfragment.FragmentRetriever;
+import com.coder.zzq.lib.robustfragment.options.FragmentOptions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,15 +22,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, new ExampleFragment(), "12345")
-                .commit();
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, new ExampleFragment(), "67890")
-                .commit();
+        FragmentMaster.operations()
+                .complete()
     }
 
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -33,11 +38,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
+        startActivity(new Intent(this,SecondActivity.class));
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-//        getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.fragment_container)).commitNow();
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
-        Log.d("test", fragment.isAdded() + "" + fragment.isVisible() + fragment.isDetached());
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
