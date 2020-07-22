@@ -1,55 +1,42 @@
 package com.coder.zzq.robustfragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import com.coder.zzq.lib.robustfragment.FragmentMaster;
-import com.coder.zzq.lib.robustfragment.FragmentRetriever;
-import com.coder.zzq.lib.robustfragment.options.FragmentOptions;
+import com.coder.zzq.smartshow.core.SmartShow;
 
-public class MainActivity extends AppCompatActivity {
-
-    public static int count = 0;
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container,new ExampleFragment())
-                .commit();
+        SmartShow.init(getApplication());
+        mListView = findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
     }
 
     @Override
-    public void onAttachFragment(@NonNull Fragment fragment) {
-        super.onAttachFragment(fragment);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this, ShowInActivity.class));
+                break;
+            case 3:
+                startActivity(new Intent(this, TestActivity.class));
+                break;
+        }
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
-    }
-
-    public void onClick(View view) {
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 }
