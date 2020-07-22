@@ -3,17 +3,12 @@ package com.coder.zzq.lib.robustfragment.options;
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
-import androidx.fragment.app.Fragment;
-
-import com.coder.zzq.lib.robustfragment.RobustUtils;
 
 public final class FragmentOptions implements IFragmentOptions {
-    private Class<? extends Fragment> mFragmentClass;
     private Bundle mArguments;
     @IdRes
     private int mContainerId;
     private String mTag;
-    private String mTransformedTag;
     private boolean alreadyAddedToFragmentManager;
 
     private FragmentOptions() {
@@ -24,11 +19,6 @@ public final class FragmentOptions implements IFragmentOptions {
         return new FragmentOptions();
     }
 
-    @Override
-    public FragmentOptions fragmentClass(Class<? extends Fragment> fragmentClass) {
-        mFragmentClass = com.coder.zzq.toolkit.Utils.requireNonNull(fragmentClass, "the fragment class must be not null");
-        return this;
-    }
 
     @Override
     public FragmentOptions intArgument(String argName, int argValue) {
@@ -41,6 +31,13 @@ public final class FragmentOptions implements IFragmentOptions {
     public FragmentOptions stringArgument(String argName, String argValue) {
         ensureArgumentsBundleCreated();
         mArguments.putString(argName, argValue);
+        return this;
+    }
+
+    @Override
+    public IFragmentOptions booleanArgument(String argName, boolean argValue) {
+        ensureArgumentsBundleCreated();
+        mArguments.putBoolean(argName, argValue);
         return this;
     }
 
@@ -66,12 +63,7 @@ public final class FragmentOptions implements IFragmentOptions {
     @Override
     public FragmentOptions tag(String tag) {
         mTag = (tag == null) ? "" : tag.trim();
-        mTransformedTag = null;
         return this;
-    }
-
-    public Class<? extends Fragment> getFragmentClass() {
-        return mFragmentClass;
     }
 
     public Bundle getArguments() {
@@ -84,14 +76,6 @@ public final class FragmentOptions implements IFragmentOptions {
 
     public String getTag() {
         return mTag;
-    }
-
-    public String getTransformedTag() {
-        if (mTransformedTag == null) {
-            mTransformedTag = RobustUtils.parseRobustFragmentTag(mFragmentClass, mContainerId, mTag);
-        }
-
-        return mTransformedTag;
     }
 
 

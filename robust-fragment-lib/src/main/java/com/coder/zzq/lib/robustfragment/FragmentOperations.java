@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.coder.zzq.lib.robustfragment.options.FragmentOptions;
 import com.coder.zzq.lib.robustfragment.options.IFragmentOptions;
-import com.coder.zzq.toolkit.Utils;
+
 
 public class FragmentOperations {
     private FragmentManager mFragmentManager;
@@ -17,7 +17,7 @@ public class FragmentOperations {
     protected String mTransformedBackStackEntryName;
 
     public FragmentOperations(FragmentManager fragmentManager) {
-        mFragmentManager = Utils.requireNonNull(fragmentManager, "the fragment manager can not be null!");
+//        mFragmentManager = Utils.requireNonNull(fragmentManager, "the fragment manager can not be null!");
     }
 
     private FragmentTransaction getCurrentTransaction() {
@@ -29,7 +29,7 @@ public class FragmentOperations {
 
     public FragmentOperations add(IFragmentOptions fragmentOption) {
         FragmentOptions options = (FragmentOptions) fragmentOption;
-        Fragment fragment = FragmentRetriever.createOrRetrieveFragment(mFragmentManager, options);
+        Fragment fragment = null;
         if (!options.isAlreadyAddedToFragmentManager()) {
             getCurrentTransaction().add(options.getContainerId(), fragment, options.getTag());
         }
@@ -105,7 +105,7 @@ public class FragmentOperations {
     }
 
     public FragmentOperations replace(FragmentOptions fragmentOptions) {
-        getCurrentTransaction().replace(fragmentOptions.getContainerId(), FragmentRetriever.createOrRetrieveFragment(mFragmentManager, fragmentOptions), fragmentOptions.getTag());
+//        getCurrentTransaction().replace(fragmentOptions.getContainerId(), FragmentRetriever.createOrRetrieveFragment(mFragmentManager, fragmentOptions), fragmentOptions.getTag());
         return this;
     }
 

@@ -9,7 +9,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.coder.zzq.smartshow.core.SmartShow;
+import com.coder.zzq.lib.robustfragment.options.FragmentOptions;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private ListView mListView;
@@ -18,9 +18,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SmartShow.init(getApplication());
         mListView = findViewById(R.id.list_view);
         mListView.setOnItemClickListener(this);
+        ExampleFragmentMaster.injector()
+                .options(
+                        FragmentOptions.create()
+                                .containerId(R.id.fragment_container)
+                                .tag("123")
+                )
+                .addInto(this);
+
+
     }
 
     @Override

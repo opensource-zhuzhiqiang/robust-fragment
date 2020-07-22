@@ -15,8 +15,6 @@ import androidx.appcompat.app.AppCompatDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.coder.zzq.toolkit.Utils;
-
 public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment implements DialogInterface.OnCancelListener, IRobustDialog {
     private static final String SAVED_DIALOG_STATE_TAG = "android:savedDialogState";
     private static final String IS_MENU_VISIBLE_TAG = "isMenuVisible";
@@ -47,9 +45,9 @@ public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment
     }
 
     public static void show(@NonNull FragmentManager manager, @NonNull String businessTag) {
-        if (Utils.isEmpty(businessTag)) {
-            throw new IllegalArgumentException("the business tag for the dialog can not be empty or null");
-        }
+//        if (Utils.isEmpty(businessTag)) {
+//            throw new IllegalArgumentException("the business tag for the dialog can not be empty or null");
+//        }
 
         RobustDialog fragment = (RobustDialog) manager.findFragmentByTag(businessTag);
         if (fragment == null) {

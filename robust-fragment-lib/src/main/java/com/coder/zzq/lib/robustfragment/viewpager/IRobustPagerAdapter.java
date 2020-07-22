@@ -2,6 +2,6 @@ package com.coder.zzq.lib.robustfragment.viewpager;
 
 import androidx.fragment.app.Fragment;
 
-public interface IRobustPageAdapter {
+public interface IRobustPagerAdapter {
     Fragment getFragmentItem(int position);
 }

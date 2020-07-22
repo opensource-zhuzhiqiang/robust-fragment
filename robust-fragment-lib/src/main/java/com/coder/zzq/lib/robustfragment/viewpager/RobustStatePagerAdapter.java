@@ -10,10 +10,15 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RobustStatePageAdapter extends FragmentStatePagerAdapter implements IRobustPageAdapter {
+public abstract class RobustStatePagerAdapter extends FragmentStatePagerAdapter implements IRobustPagerAdapter {
     private List<Fragment> mFragmentList;
 
-    public RobustStatePageAdapter(@NonNull FragmentManager fm, int behavior) {
+    @Deprecated
+    public RobustStatePagerAdapter(@NonNull FragmentManager fm) {
+        super(fm);
+    }
+
+    public RobustStatePagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }
 
