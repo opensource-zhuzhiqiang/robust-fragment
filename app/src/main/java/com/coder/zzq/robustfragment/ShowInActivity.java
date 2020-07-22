@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.coder.zzq.lib.robustfragment.RobustDialog;
+import com.coder.zzq.lib.robustfragment.dialog.DialogHostFragment;
 
 public class ShowInActivity extends AppCompatActivity {
 
@@ -19,8 +19,8 @@ public class ShowInActivity extends AppCompatActivity {
 
 
     public void onShowDialogClick(View view) {
-        RobustDialog.show(getSupportFragmentManager(), "123");
-        RobustDialog.show(getSupportFragmentManager(), "123");
+        DialogHostFragment.show(getSupportFragmentManager(), "123");
+        DialogHostFragment.show(getSupportFragmentManager(), "123");
     }
 
     public void onRecreateClick(View view) {

@@ -1,4 +1,4 @@
-package com.coder.zzq.lib.robustfragment;
+package com.coder.zzq.lib.robustfragment.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment implements DialogInterface.OnCancelListener, IRobustDialog {
+public class DialogHostFragment<NestedDialog extends AppCompatDialog> extends Fragment implements DialogInterface.OnCancelListener {
     private static final String SAVED_DIALOG_STATE_TAG = "android:savedDialogState";
     private static final String IS_MENU_VISIBLE_TAG = "isMenuVisible";
 
@@ -28,13 +27,17 @@ public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment
     boolean mAddedToFm;
     int mOnCreateCalled;
     int mOnCreateViewCalled;
-    String mFragmentTag;
 
+    private OnCreateDialogCallback<NestedDialog> mOnCreateDialogCallback;
 
-    public RobustDialog() {
+    public DialogHostFragment() {
 
     }
 
+
+    public void setOnCreateDialogCallback(OnCreateDialogCallback<NestedDialog> onCreateDialogCallback) {
+        this.mOnCreateDialogCallback = onCreateDialogCallback;
+    }
 
     public void showInActivity(AppCompatActivity activity, String businessTag) {
         show(activity.getSupportFragmentManager(), businessTag);
@@ -44,25 +47,23 @@ public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment
         show(fragment.getChildFragmentManager(), businessTag);
     }
 
-    public static void show(@NonNull FragmentManager manager, @NonNull String businessTag) {
-//        if (Utils.isEmpty(businessTag)) {
-//            throw new IllegalArgumentException("the business tag for the dialog can not be empty or null");
-//        }
+    public void show(@NonNull FragmentManager manager, @NonNull String businessTag) {
 
-        RobustDialog fragment = (RobustDialog) manager.findFragmentByTag(businessTag);
-        if (fragment == null) {
-            fragment = new RobustDialog();
+        DialogHostFragment fragment = (DialogHostFragment) manager.findFragmentByTag(businessTag);
+
+        if (fragment != this && !mAddedToFm) {
+            fragment = new DialogHostFragment();
 
             manager.beginTransaction()
                     .add(fragment, businessTag)
                     .commitNow();
-            fragment.mAddedToFm = true;
+            mAddedToFm = true;
             return;
         }
-        fragment.mDialogDismissed = false;
+        mDialogDismissed = false;
 
-        if (fragment.mOnStarted && !fragment.mDialog.isShowing()) {
-            fragment.mDialog.show();
+        if (mOnStarted && !mDialog.isShowing()) {
+            mDialog.show();
         }
     }
 
@@ -107,15 +108,8 @@ public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment
 
 
     @NonNull
-    public NestedDialog onCreateDialog(@Nullable Bundle savedInstanceState){
-        return (NestedDialog) new AlertDialog.Builder(getActivity())
-                .setMessage("1234")
-                .create();
-    }
-
-
-    protected void onResetDialog(NestedDialog dialog) {
-
+    public NestedDialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        return mOnCreateDialogCallback.onCreate();
     }
 
     @Nullable
@@ -123,7 +117,7 @@ public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mOnCreateViewCalled++;
         if (mOnCreateViewCalled > mOnCreateCalled) {
-            onResetDialog(mDialog);
+
             mOnCreateViewCalled--;
         }
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -239,8 +233,7 @@ public class RobustDialog<NestedDialog extends AppCompatDialog> extends Fragment
         mDialogDismissed = true;
     }
 
-    @Override
-    public IRobustDialog businessTag(String businessTag) {
-        return null;
+    private interface OnCreateDialogCallback<NestedDialog> {
+        NestedDialog onCreate();
     }
 }
