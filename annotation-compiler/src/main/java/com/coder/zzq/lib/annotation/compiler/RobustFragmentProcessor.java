@@ -2,6 +2,7 @@ package com.coder.zzq.lib.annotation.compiler;
 
 import androidx.annotation.IdRes;
 
+import com.coder.zzq.lib.annotations.RobustDialog;
 import com.coder.zzq.lib.annotations.RobustFragment;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -14,7 +15,7 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +33,10 @@ import javax.lang.model.element.TypeElement;
 public class RobustFragmentProcessor extends AbstractProcessor {
     private Filer mFiler;
     private ProcessingEnvironment mProcessingEnvironment;
+    private String[] mSupportAnnotation = {
+            RobustFragment.class.getCanonicalName(),
+            RobustDialog.class.getCanonicalName(),
+    };
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -42,7 +47,11 @@ public class RobustFragmentProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Collections.singleton(RobustFragment.class.getCanonicalName());
+        Set<String> stringSet = new HashSet<>(mSupportAnnotation.length);
+        for (String className : mSupportAnnotation) {
+            stringSet.add(className);
+        }
+        return stringSet;
     }
 
     @Override
@@ -52,8 +61,49 @@ public class RobustFragmentProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+        for (TypeElement typeElement : set) {
+            switch (typeElement.getSimpleName().toString()) {
+                case "RobustFragment":
+                    processRobustFragment(typeElement, roundEnvironment);
+                    break;
+                case "RobustDialog":
+                    processRobustDialog(typeElement, roundEnvironment);
+                    break;
+            }
+        }
+        return true;
+    }
 
-        Set<? extends Element> annotatedElements = roundEnvironment.getElementsAnnotatedWith(RobustFragment.class);
+    private void processRobustDialog(TypeElement typeElement, RoundEnvironment roundEnvironment) {
+        Set<? extends Element> annotatedClasses = roundEnvironment.getElementsAnnotatedWith(typeElement);
+        for (Element annotatedClass : annotatedClasses) {
+            String annotatedClassPackageName = mProcessingEnvironment.getElementUtils().getPackageOf(annotatedClass).toString();
+            String annotatedClassName = annotatedClass.getSimpleName().toString();
+            MethodSpec showInActivity = MethodSpec.methodBuilder("bindLifecycle")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .addParameter(Classes.ACTIVITY, ParamNames.ACTIVITY)
+                    .addParameter(String.class, "businessTag")
+                    .returns(TypeName.VOID)
+                    .build();
+
+            TypeSpec dialogMaster = TypeSpec.classBuilder(annotatedClassName + "Binder")
+                    .superclass(Classes.FRAGMENT)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addMethod(showInActivity)
+                    .build();
+
+            try {
+                JavaFile.builder(annotatedClassPackageName, dialogMaster)
+                        .build()
+                        .writeTo(mFiler);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void processRobustFragment(TypeElement typeElement, RoundEnvironment roundEnvironment) {
+        Set<? extends Element> annotatedElements = roundEnvironment.getElementsAnnotatedWith(typeElement);
         for (Element element : annotatedElements) {
             String packageName = mProcessingEnvironment.getElementUtils().getPackageOf(element).toString();
             ClassName srcObj = ClassName.get(packageName, element.getSimpleName().toString());
@@ -176,8 +226,5 @@ public class RobustFragmentProcessor extends AbstractProcessor {
                 e.printStackTrace();
             }
         }
-
-
-        return true;
     }
 }
