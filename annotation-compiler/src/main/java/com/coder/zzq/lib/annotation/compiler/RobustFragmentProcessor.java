@@ -2,7 +2,6 @@ package com.coder.zzq.lib.annotation.compiler;
 
 import androidx.annotation.IdRes;
 
-import com.coder.zzq.lib.annotations.RobustDialog;
 import com.coder.zzq.lib.annotations.RobustFragment;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -35,7 +34,6 @@ public class RobustFragmentProcessor extends AbstractProcessor {
     private ProcessingEnvironment mProcessingEnvironment;
     private String[] mSupportAnnotation = {
             RobustFragment.class.getCanonicalName(),
-            RobustDialog.class.getCanonicalName(),
     };
 
     @Override
@@ -66,41 +64,12 @@ public class RobustFragmentProcessor extends AbstractProcessor {
                 case "RobustFragment":
                     processRobustFragment(typeElement, roundEnvironment);
                     break;
-                case "RobustDialog":
-                    processRobustDialog(typeElement, roundEnvironment);
-                    break;
             }
         }
         return true;
     }
 
-    private void processRobustDialog(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        Set<? extends Element> annotatedClasses = roundEnvironment.getElementsAnnotatedWith(typeElement);
-        for (Element annotatedClass : annotatedClasses) {
-            String annotatedClassPackageName = mProcessingEnvironment.getElementUtils().getPackageOf(annotatedClass).toString();
-            String annotatedClassName = annotatedClass.getSimpleName().toString();
-            MethodSpec showInActivity = MethodSpec.methodBuilder("bindLifecycle")
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .addParameter(Classes.ACTIVITY, ParamNames.ACTIVITY)
-                    .addParameter(String.class, "businessTag")
-                    .returns(TypeName.VOID)
-                    .build();
 
-            TypeSpec dialogMaster = TypeSpec.classBuilder(annotatedClassName + "Binder")
-                    .superclass(Classes.FRAGMENT)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addMethod(showInActivity)
-                    .build();
-
-            try {
-                JavaFile.builder(annotatedClassPackageName, dialogMaster)
-                        .build()
-                        .writeTo(mFiler);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private void processRobustFragment(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         Set<? extends Element> annotatedElements = roundEnvironment.getElementsAnnotatedWith(typeElement);

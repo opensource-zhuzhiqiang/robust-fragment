@@ -46,11 +46,13 @@ public abstract class RobustStatePagerAdapter extends FragmentStatePagerAdapter 
 
     public void ensureFragmentListCreated(int position) {
         if (mFragmentList == null) {
-            mFragmentList = new ArrayList<>(getCount());
+            mFragmentList = new ArrayList<>();
         }
 
         while (mFragmentList.size() <= position) {
             mFragmentList.add(null);
         }
     }
+
+
 }
