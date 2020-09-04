@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="entry_items">
-        <item>show in activity</item>
-        <item>show in fragment</item>
-        <item>show in view pager</item>
-        <item>test activity</item>
-    </string-array>
-</resources>

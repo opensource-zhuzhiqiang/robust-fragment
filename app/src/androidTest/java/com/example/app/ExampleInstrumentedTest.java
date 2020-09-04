@@ -1,8 +1,8 @@
-package com.coder.zzq.robustfragment;
+package com.example.app;
 
 import android.content.Context;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
@@ -20,8 +20,7 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        assertEquals("com.coder.zzq.smartfragment", appContext.getPackageName());
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        assertEquals("com.example.app", appContext.getPackageName());
     }
 }
